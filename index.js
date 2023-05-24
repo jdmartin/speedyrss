@@ -70,7 +70,7 @@ client.once("ready", () => {
   heartbeat.startBeating();
 
   // Set the job schedule and content
-  const job = schedule.scheduleJob("01 01 */2 * * * ", function () {
+  schedule.scheduleJob("01 01 */2 * * * ", function () {
     iterateFeedUrls(feedUrls);
   });
 });
