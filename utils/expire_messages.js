@@ -6,7 +6,7 @@ const channelId = process.env.updates_channel;
 async function startExpirationCheck(client) {
   console.log("Expiration check started.");
   const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - process.env.expiry_days);
 
   // Fetch the specified channel
   const channel = client.channels.cache.get(channelId);

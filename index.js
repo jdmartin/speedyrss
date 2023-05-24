@@ -30,9 +30,14 @@ client.once("ready", () => {
     updater.iterateFeedUrls(feedUrls, client);
   });
 
-  schedule.scheduleJob("01 15 05 * * *", function () {
-    expirer.startExpirationCheck(client);
-  });
+  if (process.env.allow_expiry === "True") {
+    console.log(
+      `Enabling expiry. Messages expire after ${process.env.expiry_days} days.`
+    );
+    schedule.scheduleJob("01 15 05 * * *", function () {
+      expirer.startExpirationCheck(client);
+    });
+  }
 });
 
 client.login(process.env.BOT_TOKEN);
