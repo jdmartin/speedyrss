@@ -37,7 +37,7 @@ client.once("ready", () => {
   const heartbeat = new heart.Heartbeat();
   heartbeat.startBeating();
 
-  const job = schedule.scheduleJob("01 20 23 * * * ", function () {
+  const job = schedule.scheduleJob("01 01 */2 * * * ", function () {
     (async () => {
       const feedUrls = {
         BigWigs: "https://github.com/BigWigsMods/BigWigs/releases.atom",
