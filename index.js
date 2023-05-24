@@ -53,7 +53,7 @@ client.once("ready", () => {
         const currentResponse =
           feed.items.length > 0 ? feed.items[0].title : "";
         console.log(feed.items[0].title);
-        if (previousResponses[feedUrl] === currentResponse) {
+        if (previousResponses[feedUrl] !== currentResponse) {
           const updatesChannel = client.channels.cache.get(
             process.env.updates_channel
           );
