@@ -59,15 +59,17 @@ async function iterateFeedUrls(feedUrls) {
 
 //Ok, let's kick it off...
 client.once("ready", () => {
-  // prints "Ready!" to the console once the bot is online
+  // Set status once the bot is online
   client.user.setActivity("the wind...", { type: 2 });
 
+  // Log that the bot is up and running
   console.log("Speedy Standing By!");
 
-  //Start the heartbeat
+  // Start the heartbeat
   const heartbeat = new heart.Heartbeat();
   heartbeat.startBeating();
 
+  // Set the job schedule and content
   const job = schedule.scheduleJob("01 01 */2 * * * ", function () {
     iterateFeedUrls(feedUrls);
   });
