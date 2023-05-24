@@ -39,16 +39,8 @@ client.once("ready", () => {
 
   const job = schedule.scheduleJob("01 01 */2 * * * ", function () {
     (async () => {
-      const feedUrls = {
-        BigWigs: "https://github.com/BigWigsMods/BigWigs/releases.atom",
-        DBM_Retail:
-          "https://github.com/DeadlyBossMods/DBM-Retail/releases.atom",
-        RCLootCouncil2:
-          "https://github.com/evil-morfar/RCLootCouncil2/releases.atom",
-        WeakAuras2: "https://github.com/WeakAuras/WeakAuras2/releases.atom",
-
-        // Add more feed URLs here
-      };
+      // Load feedUrls from a file
+      const feedUrls = JSON.parse(fs.readFileSync("./data/feedUrls.json"));
 
       for (const key in feedUrls) {
         const feedUrl = feedUrls[key];
