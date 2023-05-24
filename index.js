@@ -45,6 +45,7 @@ client.once("ready", () => {
           "https://github.com/DeadlyBossMods/DBM-Retail/releases.atom",
         RCLootCouncil2:
           "https://github.com/evil-morfar/RCLootCouncil2/releases.atom",
+        WeakAuras2: "https://github.com/WeakAuras/WeakAuras2/releases.atom",
 
         // Add more feed URLs here
       };
