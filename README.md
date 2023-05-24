@@ -20,6 +20,6 @@ A toy for fetching rss/atom feeds and pushing to a channel on Discord. (very alp
 
 ## discord notes
 
-- Currently, I run this with only the create message and embed links permissions.
+- Currently, I run this with only the create message, manage messages (on updates channel only), and embed links permissions.
 - My bot has access to a text channel I made for it, and that's it.  Works well, so far!
 
