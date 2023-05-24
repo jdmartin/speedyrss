@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 #custom
-/data
+/data/*.json
