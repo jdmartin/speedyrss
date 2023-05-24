@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 #custom
-./data/previous_responses.json
+data/previous_responses.json
