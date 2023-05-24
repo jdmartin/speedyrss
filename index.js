@@ -37,13 +37,15 @@ client.once("ready", () => {
   const heartbeat = new heart.Heartbeat();
   heartbeat.startBeating();
 
-  const job = schedule.scheduleJob("01 01 */2 * * * ", function () {
+  const job = schedule.scheduleJob("01 20 23 * * * ", function () {
     (async () => {
       const feedUrls = {
+        BigWigs: "https://github.com/BigWigsMods/BigWigs/releases.atom",
         DBM_Retail:
           "https://github.com/DeadlyBossMods/DBM-Retail/releases.atom",
         RCLootCouncil2:
           "https://github.com/evil-morfar/RCLootCouncil2/releases.atom",
+
         // Add more feed URLs here
       };
 
