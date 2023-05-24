@@ -5,7 +5,7 @@ A toy for fetching rss/atom feeds and pushing to a channel on Discord. (very alp
 ## setup 
 ### (N.B. Bot is currently set to private on Discord, but this will probably change when better formed...)
 
-- copy .env-dist to .env and fill out the appropriate settings.
+- copy .env-dist to .env and fill out the appropriate settings. (TODO: Expand.)
 - populate data/feedUrls.json with the things you want to keep track of.
   - Example: 
     ```json
