@@ -52,8 +52,10 @@ client.once("ready", () => {
         let feed = await parser.parseURL(feedUrl);
         const currentResponse =
           feed.items.length > 0 ? feed.items[0].title : "";
-        console.log(feed.items[0].title);
         if (previousResponses[feedUrl] !== currentResponse) {
+          console.log(
+            `Update detected for ${key} at ${new Date().toLocaleString()};`
+          );
           const updatesChannel = client.channels.cache.get(
             process.env.updates_channel
           );
