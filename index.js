@@ -7,6 +7,7 @@ const utils = require("./utils/utils.js");
 const heart = require("./utils/heartbeat.js");
 const updater = require("./utils/check_feeds.js");
 const expirer = require("./utils/expire_messages.js");
+const blogger = require("./utils/check_guild_blog.js");
 const client = utils.client;
 const fs = require("fs");
 
@@ -37,6 +38,11 @@ client.once("ready", () => {
     schedule.scheduleJob("01 15 05 * * *", function () {
       expirer.startExpirationCheck(client);
     });
+  }
+
+  if (process.env.check_blog === "True") {
+    const guildBlog = JSON.parse(fs.readFileSync("./data/guildBlog.json"));
+    blogger.checkBlog(guildBlog, client);
   }
 });
 
