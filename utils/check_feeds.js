@@ -45,6 +45,14 @@ async function iterateFeedUrls(feedUrls, client) {
     const pauseDuration = getRandomDelay(15, 30); // Space out requests for niceness...
     await new Promise((resolve) => setTimeout(resolve, pauseDuration));
   }
+
+  // Write the updated previousResponses object to the JSON file
+  fs.writeFileSync(
+    previousResponsesFile,
+    JSON.stringify(previousResponses, null, 2),
+    "utf8"
+  );
+  console.log("Responses File updated.");
 }
 
 module.exports = {
