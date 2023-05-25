@@ -49,12 +49,11 @@ async function checkBlog(guildBlog, client) {
         }
         lastPost[feedUrl] = currentResponse;
       }
+      // Write the updated guildBlog object to the JSON file
+      fs.writeFileSync(lastPostFile, JSON.stringify(lastPost, null, 2), "utf8");
+      console.log("Last post updated.");
     }
   }
-
-  // Write the updated guildBlog object to the JSON file
-  fs.writeFileSync(lastPostFile, JSON.stringify(lastPost, null, 2), "utf8");
-  console.log("Last post updated.");
 }
 
 module.exports = {

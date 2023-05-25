@@ -41,8 +41,11 @@ client.once("ready", () => {
   }
 
   if (process.env.check_blog === "True") {
-    const guildBlog = JSON.parse(fs.readFileSync("./data/guildBlog.json"));
-    blogger.checkBlog(guildBlog, client);
+    console.log(`Enabling guild blog checking!`);
+    schedule.scheduleJob("01 */15 * * * *", function () {
+      const guildBlog = JSON.parse(fs.readFileSync("./data/guildBlog.json"));
+      blogger.checkBlog(guildBlog, client);
+    });
   }
 });
 
