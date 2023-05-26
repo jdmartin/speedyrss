@@ -5,8 +5,8 @@ const channelId = process.env.updates_channel;
 
 async function startExpirationCheck(client) {
     console.log("Expiration check started.");
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - process.env.expiry_days);
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() - process.env.expiry_days);
 
     // Fetch the specified channel
     const channel = client.channels.cache.get(channelId);
@@ -23,7 +23,7 @@ async function startExpirationCheck(client) {
     // Filter and delete old messages
     messages
         .filter((message) => {
-            return message.author.bot && message.createdAt < thirtyDaysAgo;
+            return message.author.bot && message.createdAt < expiryDate;
         })
         .forEach(async (message) => {
             try {
