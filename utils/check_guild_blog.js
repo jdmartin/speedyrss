@@ -39,8 +39,10 @@ async function checkBlog(guildBlog, client) {
             if (feed.items[0].categories[0] === "Announcements") {
                 if (updatesChannel) {
                     let baseGuildURL = feedUrl.replace("/feed", "");
+                    let title = feed.items[0].title;
+                    let category = feed.items[0].categories[0];
                     updatesChannel.send({
-                        content: `"${feed.items[0].title}" has been added to ${key}!\n${baseGuildURL}/${feed.items[0].categories[0]}`,
+                        content: `"${title}" has been added to ${key}!\n${baseGuildURL}/${category}`,
                         username: client.user.username,
                         avatarURL: client.user.displayAvatarURL(),
                     });
