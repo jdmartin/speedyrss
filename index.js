@@ -13,40 +13,38 @@ const fs = require("fs");
 
 //Ok, let's kick it off...
 client.once("ready", () => {
-  // Set status once the bot is online
-  client.user.setActivity("the wind...", { type: 2 });
+    // Set status once the bot is online
+    client.user.setActivity("the wind...", { type: 2 });
 
-  // Log that the bot is up and running
-  console.log("Speedy Standing By!");
+    // Log that the bot is up and running
+    console.log("Speedy Standing By!");
 
-  // Start the heartbeat
-  const heartbeat = new heart.Heartbeat();
-  heartbeat.startBeating();
+    // Start the heartbeat
+    const heartbeat = new heart.Heartbeat();
+    heartbeat.startBeating();
 
-  // Set the job schedule and content
-  schedule.scheduleJob("01 01 */2 * * * ", function () {
-    // Load feedUrls from a file
-    const feedUrls = JSON.parse(fs.readFileSync("./data/feedUrls.json"));
+    // Set the job schedule and content
+    schedule.scheduleJob("01 01 */2 * * * ", function () {
+        // Load feedUrls from a file
+        const feedUrls = JSON.parse(fs.readFileSync("./data/feedUrls.json"));
 
-    updater.iterateFeedUrls(feedUrls, client);
-  });
-
-  if (process.env.allow_expiry === "True") {
-    console.log(
-      `Enabling expiry. Messages expire after ${process.env.expiry_days} days.`
-    );
-    schedule.scheduleJob("01 15 05 * * *", function () {
-      expirer.startExpirationCheck(client);
+        updater.iterateFeedUrls(feedUrls, client);
     });
-  }
 
-  if (process.env.check_blog === "True") {
-    console.log(`Enabling guild blog checking!`);
-    schedule.scheduleJob("01 */15 * * * *", function () {
-      const guildBlog = JSON.parse(fs.readFileSync("./data/guildBlog.json"));
-      blogger.checkBlog(guildBlog, client);
-    });
-  }
+    if (process.env.allow_expiry === "True") {
+        console.log(`Enabling expiry. Messages expire after ${process.env.expiry_days} days.`);
+        schedule.scheduleJob("01 15 05 * * *", function () {
+            expirer.startExpirationCheck(client);
+        });
+    }
+
+    if (process.env.check_blog === "True") {
+        console.log(`Enabling guild blog checking!`);
+        schedule.scheduleJob("01 */15 * * * *", function () {
+            const guildBlog = JSON.parse(fs.readFileSync("./data/guildBlog.json"));
+            blogger.checkBlog(guildBlog, client);
+        });
+    }
 });
 
 client.login(process.env.BOT_TOKEN);
