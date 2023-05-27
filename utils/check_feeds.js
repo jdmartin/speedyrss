@@ -19,11 +19,13 @@ function getRandomDelay(min, max) {
 }
 
 async function iterateFeedUrls(feedUrls, client) {
+    let didUpdate = false;
     for (const key in feedUrls) {
         const feedUrl = feedUrls[key];
         let feed = await parser.parseURL(feedUrl);
         const currentResponse = feed.items.length > 0 ? feed.items[0].title : "";
         if (previousResponses[feedUrl] !== currentResponse) {
+            didUpdate = true;
             console.log(`Update detected for ${key} at ${new Date().toLocaleString()};`);
             const updatesChannel = client.channels.cache.get(process.env.updates_channel);
 
@@ -42,13 +44,15 @@ async function iterateFeedUrls(feedUrls, client) {
         await new Promise((resolve) => setTimeout(resolve, pauseDuration));
     }
 
-    // Write the updated previousResponses object to the JSON file
-    fs.writeFileSync(
-        previousResponsesFile,
-        JSON.stringify(previousResponses, null, 2),
-        "utf8"
-    );
-    console.log("Responses File updated.");
+    if (didUpdate === true) {
+        console.log("Responses File updated.");
+        // Write the updated previousResponses object to the JSON file
+        fs.writeFileSync(
+            previousResponsesFile,
+            JSON.stringify(previousResponses, null, 2),
+            "utf8"
+        );
+    }
 }
 
 module.exports = {

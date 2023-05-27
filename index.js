@@ -27,7 +27,6 @@ client.once("ready", () => {
     schedule.scheduleJob("01 01 */2 * * * ", function () {
         // Load feedUrls from a file
         const feedUrls = JSON.parse(fs.readFileSync("./data/feedUrls.json"));
-
         updater.iterateFeedUrls(feedUrls, client);
     });
 
