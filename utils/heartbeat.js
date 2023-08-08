@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = process.env.speedyport;
+const bind_ip = process.env.bind_ip;
 
 const helmet = require("helmet");
 
@@ -22,9 +23,9 @@ class Heartbeat {
             res.send("🐢");
         });
 
-        app.listen(port, "localhost", () => {
+        app.listen(port, bind_ip, () => {
             console.log(
-                `Heartbeat beating on http://localhost:${port}${process.env.HEARTBEAT_PATH}`
+                `Heartbeat beating on http://${bind_ip}:${port}${process.env.HEARTBEAT_PATH}`
             );
         });
     }
