@@ -17,11 +17,15 @@ client.once("ready", () => {
     client.user.setActivity("the wind...", { type: 2 });
 
     // Log that the bot is up and running
-    console.log("Speedy Standing By!");
+    console.log("RSSBot Standing By!");
 
-    // Start the heartbeat
+    //Start the heartbeat
     const heartbeat = new heart.Heartbeat();
-    heartbeat.startBeating();
+    if (process.env.heart_type === 'push') {
+        heartbeat.startPushing();
+    } else if (process.env.heart_type === 'beating') {
+        heartbeat.startBeating();
+    }
 
     // Set the job schedule and content
     schedule.scheduleJob("01 01 */2 * * * ", function () {
