@@ -16,15 +16,12 @@ client.once("ready", () => {
     // Set status once the bot is online
     client.user.setActivity("the wind...", { type: 2 });
 
-    // Log that the bot is up and running
-    console.log("RSSBot Standing By!");
-
     //Start the heartbeat
     const heartbeat = new heart.Heartbeat();
     if (process.env.heart_type === 'push') {
         heartbeat.startPushing();
-    } else if (process.env.heart_type === 'beating') {
-        heartbeat.startBeating();
+    } else if (process.env.heart_type === 'socket') {
+        heartbeat.startSocket();
     }
 
     // Set the job schedule and content
