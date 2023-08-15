@@ -34,7 +34,7 @@ class Heartbeat {
             // HTTP response components (because nginx)
             const responseStatusLine = 'HTTP/1.1 200 OK';
             const responseHeaders = 'Content-Type: text/plain\r\n';
-            const responseBody = '🐢\n';
+            const responseBody = 'RSS\n';
 
             // Combine the components to create the full response
             const response = `${responseStatusLine}\r\n${responseHeaders}\r\n${responseBody}`;
