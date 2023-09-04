@@ -1,6 +1,3 @@
-// Load the config file.
-require("dotenv").config();
-
 const channelId = process.env.updates_channel;
 
 async function startExpirationCheck(client) {

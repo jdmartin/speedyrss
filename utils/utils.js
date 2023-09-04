@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
 
 const myPartials = [Partials.Channel, Partials.Message, Partials.Reaction];
