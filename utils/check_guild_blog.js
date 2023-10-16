@@ -21,14 +21,26 @@ if (fs.existsSync(lastPostFile)) {
 }
 
 // Functions
+async function parseFeed(feedUrl) {
+    try {
+        const feed = await parser.parseURL(feedUrl);
+        return feed;
+    } catch (error) {
+        // Handle any errors that occur during parsing
+        console.error("Error parsing feed:", error);
+        return null;
+    }
+}
+
 async function checkBlog(guildBlog, client) {
     for (const key in guildBlog) {
         const feedUrl = guildBlog[key];
-        let feed = await parser.parseURL(feedUrl);
+        const feed = await parseFeed(feedUrl);
 
-        const currentResponse = feed.items.length > 0 ? feed.items[0].link : "";
+        const currentResponse = feed.items[0].link
+
         if (lastPost[feedUrl] !== currentResponse) {
-            console.log(`${guildBlog[key]} update posted at ${new Date().toLocaleString()};`);
+            console.log(`${guildBlog[key]} update detected in ${feed.items[0].categories[0]} at ${new Date().toLocaleString()};`);
 
             const updatesChannel = client.channels.cache.get(
                 // NOTE: This uses a different channel than check_feeds does. You can change this.
@@ -47,9 +59,9 @@ async function checkBlog(guildBlog, client) {
                         avatarURL: client.user.displayAvatarURL(),
                     });
                 }
-                lastPost[feedUrl] = currentResponse;
             }
             // Write the updated guildBlog object to the JSON file
+            lastPost[feedUrl] = currentResponse;
             fs.writeFileSync(lastPostFile, JSON.stringify(lastPost, null, 2), "utf8");
             console.log("Last post updated.");
         }
