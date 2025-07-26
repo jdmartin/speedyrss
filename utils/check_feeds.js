@@ -14,39 +14,89 @@ if (fs.existsSync(previousResponsesFile)) {
 }
 
 // Functions
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function getRandomDelay(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min) * 1000; // Convert to milliseconds
 }
 
+async function fetchFeedWithRetry(url, { retries = 1, delayMs = 30_000 } = {}) {
+    let lastErr;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+            return await parser.parseURL(url);
+        } catch (err) {
+            lastErr = err;
+            if (attempt < retries) {
+                console.warn(
+                    `[${new Date().toISOString()}] Failed to fetch ${url} (attempt ${attempt + 1
+                    }/${retries + 1}). Retrying in ${delayMs / 1000}s...`,
+                    err?.message ?? err
+                );
+                await sleep(delayMs);
+            }
+        }
+    }
+    console.error(
+        `[${new Date().toISOString()}] Giving up on ${url} after ${retries + 1
+        } attempts.`,
+        lastErr?.message ?? lastErr
+    );
+    return null; // signal caller to skip
+}
+
 async function iterateFeedUrls(feedUrls, client) {
     let didUpdate = false;
+
     for (const key in feedUrls) {
         const feedUrl = feedUrls[key];
-        let feed = await parser.parseURL(feedUrl);
-        const currentResponse = feed.items.length > 0 ? feed.items[0].title : "";
+
+        const feed = await fetchFeedWithRetry(feedUrl, {
+            retries: 1, // first try + one retry after 30s
+            delayMs: 30_000,
+        });
+
+        if (!feed) {
+            // Skip this feed and move on
+            const pauseDuration = getRandomDelay(15, 30);
+            await sleep(pauseDuration);
+            continue;
+        }
+
+        const currentResponse =
+            feed.items && feed.items.length > 0 ? feed.items[0].title ?? "" : "";
+
         if (previousResponses[feedUrl] !== currentResponse) {
             didUpdate = true;
-            console.log(`Update detected for ${key} at ${new Date().toLocaleString()};`);
-            const updatesChannel = client.channels.cache.get(process.env.updates_channel);
+            console.log(
+                `Update detected for ${key} at ${new Date().toLocaleString()};`
+            );
+
+            const updatesChannel = client.channels.cache.get(
+                process.env.updates_channel
+            );
 
             if (updatesChannel) {
-                let updateUrl = feedUrls[key].replace(".atom", "/latest");
+                const updateUrl = feedUrls[key].replace(".atom", "/latest");
                 updatesChannel.send({
                     content: `Update detected for ${key}! ${updateUrl}`,
                     username: client.user.username,
                     avatarURL: client.user.displayAvatarURL(),
                 });
             }
+
             previousResponses[feedUrl] = currentResponse;
         }
 
-        const pauseDuration = getRandomDelay(15, 30); // Space out requests for niceness...
-        await new Promise((resolve) => setTimeout(resolve, pauseDuration));
+        // Space out requests for niceness...
+        const pauseDuration = getRandomDelay(15, 30);
+        await sleep(pauseDuration);
     }
 
-    if (didUpdate === true) {
+    if (didUpdate) {
         console.log("Responses File updated.");
-        // Write the updated previousResponses object to the JSON file
         fs.writeFileSync(
             previousResponsesFile,
             JSON.stringify(previousResponses, null, 2),
