@@ -58,15 +58,16 @@ async function iterateFeedUrls(feedUrls, client) {
             delayMs: 30_000,
         });
 
-        if (!feed) {
-            // Skip this feed and move on
+        if (!feed || !feed.items || feed.items.length === 0) {
+            console.warn(
+                `[${new Date().toISOString()}] Skipping ${feedUrl} because feed or items are missing.`
+            );
             const pauseDuration = getRandomDelay(15, 30);
             await sleep(pauseDuration);
             continue;
         }
 
-        const currentResponse =
-            feed.items && feed.items.length > 0 ? feed.items[0].title ?? "" : "";
+        const currentResponse = feed.items[0].title ?? "";
 
         if (previousResponses[feedUrl] !== currentResponse) {
             didUpdate = true;
