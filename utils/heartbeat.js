@@ -13,7 +13,7 @@ class Heartbeat {
     setSocketPath() {
         return os.platform() === 'darwin'
             ? '/tmp/rssbot-socket.sock'
-            : '/run/rssbot-socket.sock';
+            : '/run/rssbot/rssbot-socket.sock';
     }
 
     startPushing() {
