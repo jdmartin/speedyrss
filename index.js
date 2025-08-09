@@ -29,14 +29,14 @@ client.once("ready", () => {
 
     if (process.env.allow_expiry === "True") {
         console.log(`Enabling expiry. Messages expire after ${process.env.expiry_days} days.`);
-        scheduleJob("01 01 03 * * *", function () {
+        scheduleJob("01 15 05 * * *", function () {
             startExpirationCheck(client);
         });
     }
 
     if (process.env.check_blog === "True") {
         console.log(`Enabling guild blog checking!`);
-        scheduleJob("01 04 03 * * *", function () {
+        scheduleJob("01 */15 * * * *", function () {
             const guildBlog = JSON.parse(readFileSync("./data/guildBlog.json"));
             checkBlog(guildBlog, client);
         });
