@@ -1,8 +1,8 @@
-const fs = require('fs');
-const http = require("http");
-const net = require('net');
-const os = require('os');
-const path = require('path');
+import { chmodSync, existsSync, unlinkSync } from 'node:fs';
+import { access, unlink } from 'node:fs/promises';
+import { get } from 'node:http';
+import { createServer } from 'node:net';
+import { platform } from 'node:os';
 
 class Heartbeat {
     constructor() {
@@ -11,7 +11,7 @@ class Heartbeat {
     }
 
     setSocketPath() {
-        return os.platform() === 'darwin'
+        return platform() === 'darwin'
             ? '/tmp/rssbot-socket.sock'
             : '/run/rssbot/rssbot-socket.sock';
     }
@@ -20,7 +20,7 @@ class Heartbeat {
         function callURL() {
             const url = process.env.MONITOR_URL;
 
-            http.get(url, (response) => {
+            get(url, (response) => {
             }).on('error', (error) => {
                 console.error(`Error calling URL: ${error.message}`);
             });
@@ -39,8 +39,8 @@ class Heartbeat {
         console.log('Shutting down server...');
 
         try {
-            await fs.promises.access(this.socketPath);
-            await fs.promises.unlink(this.socketPath);
+            await access(this.socketPath);
+            await unlink(this.socketPath);
             console.log('Socket file removed');
         } catch (err) {
             console.error('Error removing socket file:', err);
@@ -52,11 +52,11 @@ class Heartbeat {
 
     startSocket() {
         // Remove the socket file if it exists
-        if (fs.existsSync(this.socketPath)) {
-            fs.unlinkSync(this.socketPath);
+        if (existsSync(this.socketPath)) {
+            unlinkSync(this.socketPath);
         }
 
-        const unixServer = net.createServer((client) => {
+        const unixServer = createServer((client) => {
             // Use an arrow function to maintain the class instance as 'this'
             client.write(this.cachedResponse);
             client.end();
@@ -64,7 +64,7 @@ class Heartbeat {
 
         // Start listening on the Unix socket
         unixServer.listen(this.socketPath, () => {
-            fs.chmodSync(this.socketPath, '775');
+            chmodSync(this.socketPath, '775');
             console.log('RSSBot socket started on:', this.socketPath);
             console.log("RSSBot Standing By!");
         });
@@ -86,7 +86,4 @@ class Heartbeat {
     }
 }
 
-
-module.exports = {
-    Heartbeat,
-};
+export { Heartbeat };

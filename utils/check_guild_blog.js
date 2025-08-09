@@ -1,22 +1,23 @@
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+
 // Setup parser for iterateFeedUrls
-let Parser = require("rss-parser");
-let parser = new Parser();
+import Parser from "rss-parser";
+const parser = new Parser();
 
 // Deal with previous responses
-const fs = require("fs");
 const guildBlogFile = "./data/guildBlog.json";
 const lastPostFile = "./data/guildLast.json";
 let guildBlog = {};
 let lastPost = {};
 
 // Load latest post link and blog url from JSON files
-if (fs.existsSync(guildBlogFile)) {
-    const blog = fs.readFileSync(guildBlogFile, "utf8");
+if (existsSync(guildBlogFile)) {
+    const blog = readFileSync(guildBlogFile, "utf8");
     guildBlog = JSON.parse(blog);
 }
 
-if (fs.existsSync(lastPostFile)) {
-    const previousPostData = fs.readFileSync(lastPostFile, "utf8");
+if (existsSync(lastPostFile)) {
+    const previousPostData = readFileSync(lastPostFile, "utf8");
     lastPost = JSON.parse(previousPostData);
 }
 
@@ -62,12 +63,10 @@ async function checkBlog(guildBlog, client) {
             }
             // Write the updated guildBlog object to the JSON file
             lastPost[feedUrl] = currentResponse;
-            fs.writeFileSync(lastPostFile, JSON.stringify(lastPost, null, 2), "utf8");
+            writeFileSync(lastPostFile, JSON.stringify(lastPost, null, 2), "utf8");
             console.log("Last post updated.");
         }
     }
 }
 
-module.exports = {
-    checkBlog,
-};
+export { checkBlog };

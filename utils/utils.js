@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Partials } = require("discord.js");
+import { Client, GatewayIntentBits, Partials } from "discord.js";
 
 const myPartials = [Partials.Channel, Partials.Message, Partials.Reaction];
 
@@ -9,6 +9,4 @@ const client = new Client({
     partials: myPartials,
 });
 
-module.exports = {
-    client: client,
-};
+export { client };

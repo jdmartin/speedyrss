@@ -1,12 +1,12 @@
 // Libraries
-const schedule = require("node-schedule");
-const utils = require("./utils/utils.js");
-const heart = require("./utils/heartbeat.js");
-const updater = require("./utils/check_feeds.js");
-const expirer = require("./utils/expire_messages.js");
-const blogger = require("./utils/check_guild_blog.js");
-const client = utils.client;
-const fs = require("fs");
+import { readFileSync } from "node:fs";
+import { scheduleJob } from "node-schedule";
+import { iterateFeedUrls } from "./utils/check_feeds.js";
+import { checkBlog } from "./utils/check_guild_blog.js";
+import { startExpirationCheck } from "./utils/expire_messages.js";
+import { client } from "./utils/utils.js";
+import { Heartbeat } from "./utils/heartbeat.js";
+const heart = new Heartbeat();
 
 //Ok, let's kick it off...
 client.once("ready", () => {
@@ -14,32 +14,31 @@ client.once("ready", () => {
     client.user.setActivity("the wind...", { type: 2 });
 
     //Start the heartbeat
-    const heartbeat = new heart.Heartbeat();
     if (process.env.heart_type === 'push') {
-        heartbeat.startPushing();
+        heart.startPushing();
     } else if (process.env.heart_type === 'socket') {
-        heartbeat.startSocket();
+        heart.startSocket();
     }
 
     // Set the job schedule and content
-    schedule.scheduleJob("01 01 */2 * * * ", function () {
+    scheduleJob("01 01 */2 * * * ", function () {
         // Load feedUrls from a file
-        const feedUrls = JSON.parse(fs.readFileSync("./data/feedUrls.json"));
-        updater.iterateFeedUrls(feedUrls, client);
+        const feedUrls = JSON.parse(readFileSync("./data/feedUrls.json"));
+        iterateFeedUrls(feedUrls, client);
     });
 
     if (process.env.allow_expiry === "True") {
         console.log(`Enabling expiry. Messages expire after ${process.env.expiry_days} days.`);
-        schedule.scheduleJob("01 15 05 * * *", function () {
-            expirer.startExpirationCheck(client);
+        scheduleJob("01 01 03 * * *", function () {
+            startExpirationCheck(client);
         });
     }
 
     if (process.env.check_blog === "True") {
         console.log(`Enabling guild blog checking!`);
-        schedule.scheduleJob("01 */15 * * * *", function () {
-            const guildBlog = JSON.parse(fs.readFileSync("./data/guildBlog.json"));
-            blogger.checkBlog(guildBlog, client);
+        scheduleJob("01 04 03 * * *", function () {
+            const guildBlog = JSON.parse(readFileSync("./data/guildBlog.json"));
+            checkBlog(guildBlog, client);
         });
     }
 });

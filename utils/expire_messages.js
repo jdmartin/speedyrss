@@ -32,6 +32,4 @@ async function startExpirationCheck(client) {
         });
 }
 
-module.exports = {
-    startExpirationCheck,
-};
+export { startExpirationCheck };
