@@ -1,15 +1,16 @@
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+
 // Setup parser for iterateFeedUrls
-let Parser = require("rss-parser");
+import Parser from "rss-parser";
 let parser = new Parser();
 
 // Deal with previous responses
-const fs = require("fs");
 const previousResponsesFile = "./data/previous_responses.json";
 let previousResponses = {};
 
 // Load previous responses from JSON file
-if (fs.existsSync(previousResponsesFile)) {
-    const previousResponsesData = fs.readFileSync(previousResponsesFile, "utf8");
+if (existsSync(previousResponsesFile)) {
+    const previousResponsesData = readFileSync(previousResponsesFile, "utf8");
     previousResponses = JSON.parse(previousResponsesData);
 }
 
@@ -98,7 +99,7 @@ async function iterateFeedUrls(feedUrls, client) {
 
     if (didUpdate) {
         console.log("Responses File updated.");
-        fs.writeFileSync(
+        writeFileSync(
             previousResponsesFile,
             JSON.stringify(previousResponses, null, 2),
             "utf8"
@@ -106,6 +107,4 @@ async function iterateFeedUrls(feedUrls, client) {
     }
 }
 
-module.exports = {
-    iterateFeedUrls,
-};
+export { iterateFeedUrls };
