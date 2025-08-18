@@ -4,7 +4,9 @@
   "description": "Fetch feeds and push updates to GitHub",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --env-file=.env --test --watch index.js",
+    "start": "node --env-file=.env index.js"
   },
   "author": "",
   "license": "MIT",
