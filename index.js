@@ -9,7 +9,7 @@ import { Heartbeat } from "./utils/heartbeat.js";
 const heart = new Heartbeat();
 
 //Ok, let's kick it off...
-client.once("ready", () => {
+client.once("clientReady", () => {
     // Set status once the bot is online
     client.user.setActivity("the wind...", { type: 2 });
 
