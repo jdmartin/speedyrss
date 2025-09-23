@@ -3,6 +3,7 @@ import { access, unlink } from 'node:fs/promises';
 import { get } from 'node:http';
 import { createServer } from 'node:net';
 import { platform } from 'node:os';
+import { join } from 'node:path';
 
 class Heartbeat {
     constructor() {
@@ -11,9 +12,12 @@ class Heartbeat {
     }
 
     setSocketPath() {
-        return platform() === 'darwin'
-            ? '/tmp/rssbot-socket.sock'
-            : '/run/rssbot/rssbot-socket.sock';
+        if (platform() === 'darwin') {
+            return '/tmp/rssbot-socket.sock';
+        } else {
+            const runtimeDir = `/run/user/${process.getuid()}`;
+            return join(runtimeDir, 'rssbot-socket.sock');
+        }
     }
 
     startPushing() {
