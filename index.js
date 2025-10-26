@@ -8,8 +8,14 @@ import { client } from "./utils/utils.js";
 import { Heartbeat } from "./utils/heartbeat.js";
 const heart = new Heartbeat();
 
+// Ensure jobs only initialize once per Node process
+global.jobsInitialized = global.jobsInitialized || false;
+
 //Ok, let's kick it off...
 client.once("clientReady", () => {
+    if (global.jobsInitialized) return;
+    global.jobsInitialized = true;
+
     // Set status once the bot is online
     client.user.setActivity("the wind...", { type: 2 });
 
