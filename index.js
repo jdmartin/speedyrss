@@ -17,7 +17,7 @@ client.once("clientReady", () => {
     global.jobsInitialized = true;
 
     // Set status once the bot is online
-    client.user.setActivity("the wind...", { type: 2 });
+    client.user.setActivity("Listening to: the wind...", { type: 2 });
 
     //Start the heartbeat
     if (process.env.heart_type === 'push') {
