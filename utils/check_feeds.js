@@ -1,3 +1,4 @@
+import { randomInt } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 // Setup parser for iterateFeedUrls
@@ -20,7 +21,7 @@ function sleep(ms) {
 }
 
 function getRandomDelay(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min) * 1000; // Convert to milliseconds
+    return randomInt(min, max + 1) * 1000;
 }
 
 async function fetchFeedWithRetry(url, { retries = 1, delayMs = 30_000 } = {}) {
