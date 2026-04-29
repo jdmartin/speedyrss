@@ -60,7 +60,7 @@ async function iterateFeedUrls(feedUrls, client) {
             delayMs: 30_000,
         });
 
-        if (!feed || !feed.items || feed.items.length === 0) {
+        if (!feed?.items?.[0]) {
             console.warn(
                 `[${new Date().toISOString()}] Skipping ${feedUrl} because feed or items are missing.`
             );
@@ -69,9 +69,17 @@ async function iterateFeedUrls(feedUrls, client) {
             continue;
         }
 
-        const currentResponse = feed.items[0].title ?? "";
+        const firstItem = feed.items[0];
+        const currentResponse = firstItem.title ?? "";
+        const link = firstItem.link ?? "";
 
-        if (previousResponses[feedUrl] !== currentResponse) {
+        // GUARD: If there's no link, we can't point anyone to the update
+        if (!link) {
+            console.warn(`[${new Date().toISOString()}] Skipping ${key}: Item found, but link is missing.`);
+            continue;
+        }
+
+        if (previousResponses[feedUrl] !== currentResponse && currentResponse !== "") {
             didUpdate = true;
             console.log(
                 `Update detected for ${key} at ${new Date().toLocaleString()};`
@@ -87,7 +95,7 @@ async function iterateFeedUrls(feedUrls, client) {
                     content: `Update detected for ${key}! ${updateUrl}`,
                     username: client.user.username,
                     avatarURL: client.user.displayAvatarURL(),
-                });
+                }).catch(err => console.error(`Failed to send Discord message for ${key}:`, err));
             }
 
             previousResponses[feedUrl] = currentResponse;

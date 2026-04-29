@@ -38,6 +38,11 @@ async function checkBlog(guildBlog, client) {
         const feedUrl = guildBlog[key];
         const feed = await parseFeed(feedUrl);
 
+        if (!feed || !feed.items || feed.items.length === 0) {
+            console.warn(`Skipping ${key}: Feed is empty or unavailable.`);
+            continue;
+        }
+
         const currentResponse = feed.items[0].link
 
         if (lastPost[feedUrl] !== currentResponse) {
@@ -58,7 +63,7 @@ async function checkBlog(guildBlog, client) {
                         content: `"${title}" has been added to ${key}!\n${baseGuildURL}/${category}`,
                         username: client.user.username,
                         avatarURL: client.user.displayAvatarURL(),
-                    });
+                    }).catch(err => console.error(`Failed to send Discord message for ${key}:`, err));;
                 }
             }
             // Write the updated guildBlog object to the JSON file
